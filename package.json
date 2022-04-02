@@ -9,7 +9,9 @@
   },
   "scripts": {
     "dev": "yarn nodemon --inspect dist/index.js",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
