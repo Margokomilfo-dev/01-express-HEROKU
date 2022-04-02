@@ -7,7 +7,6 @@ const app = express()
 app.use(cors())
 app.use(bodyParser.json())
 
-
 const port = process.env.PORT || 5000
 
 let videos = [
@@ -16,7 +15,7 @@ let videos = [
 ]
 
 app.get('/', (req: Request, res: Response ) => {
-    res.send('Hello: World!!!!')
+    res.send('Hello, World!!!!')
 
 })
 
@@ -84,8 +83,6 @@ app.delete('/videos/:id', (req: Request, res: Response ) => {
         }else  res.send(404)
     }else  res.send(404)
 })
-
-
 
 //start app
 app.listen(port, () => {
