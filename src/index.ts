@@ -40,6 +40,15 @@ app.get('/videos', (req: Request, res: Response) => {
 })
 app.post('/videos', (req: Request, res: Response) => {
     const videosLength = videos.length
+    const title = req.body.title
+    if (!title) {
+        res.status(400).send({
+            data: {},
+            resultCode: 1,
+            errorsMessages: [{message: 'title is required', field: ''}]
+        })
+        return
+    }
     const newVideo = {
         id: +(new Date()),
         title: req.body.title,
@@ -93,17 +102,20 @@ app.put('/videos/videos/:id', (req: Request, res: Response) => {
 })
 app.delete('/videos/:id', (req: Request, res: Response) => {
     const id = +req.params.id
-    if (id) {
-        let newVideos = videos.filter(v => v.id !== id)
-        if (newVideos.length < videos.length) {
-            videos = newVideos
-            res.send(204)
-            return
-        } else {
-            res.send(404)
-            return
-        }
-    } else res.send(404)
+    if (!id || !isNumeric(id)) {
+        res.send(404)
+        return
+    }
+
+    let newVideos = videos.filter(v => v.id !== id)
+    if (newVideos.length < videos.length) {
+        videos = newVideos
+        res.send(204)
+        return
+    } else {
+        res.send(404)
+        return
+    }
 })
 //----------------------------------------------------------------------
 
@@ -163,18 +175,14 @@ app.get('/bloggers/:id', (req: Request, res: Response) => {
         res.send(400)
         return
     }
-    if (id) {
-        const blogger = bloggers.find(b => b.id === id)
-        if (blogger) { //(!!video)
-            res.send(blogger)//res.json = res.send
-            return
-        } else {
-            res.send(404)
-            return
-        }
+
+    const blogger = bloggers.find(b => b.id === id)
+    if (blogger) { //(!!video)
+        res.send(blogger)//res.json = res.send
     } else {
         res.send(404)
     }
+
 })
 app.put('/bloggers/:id', (req: Request, res: Response) => {
     const id = +req.params.id
@@ -230,9 +238,6 @@ app.delete('/bloggers/:id', (req: Request, res: Response) => {
         if (newBloggers.length < bloggers.length) {
             bloggers = newBloggers
             res.send(204)
-        } else {
-            res.send(404)
-            return
         }
     } else res.send(404)
 })
@@ -294,18 +299,15 @@ app.get('/posts/:id', (req: Request, res: Response) => {
         res.send(400)
         return
     }
-    if (id) {
-        const post = posts.find(p => p.id === id)
-        if (post) {
-            const blogger = bloggers.find(b => b.id === post.bloggerId)
-            res.send({...post, bloggerName: blogger?.name})
-            return
-        } else {
-            res.send(404)
-            return
-        }
+
+    const post = posts.find(p => p.id === id)
+    if (post) {
+        const blogger = bloggers.find(b => b.id === post.bloggerId)
+        res.send({...post, bloggerName: blogger?.name})
+
     } else {
         res.send(404)
+
     }
 })
 app.put('/posts/:id', (req: Request, res: Response) => {
@@ -346,17 +348,16 @@ app.delete('/posts/:id', (req: Request, res: Response) => {
         res.send(400)
         return
     }
-    if (id) {
-        let newPosts = posts.filter(p => p.id !== id)
-        if (newPosts.length < posts.length) {
-            posts = newPosts
-            res.send(204)
-            return
-        } else {
-            res.send(404)
-            return
-        }
-    } else res.send(404)
+
+    let newPosts = posts.filter(p => p.id !== id)
+    if (newPosts.length < posts.length) {
+        posts = newPosts
+        res.send(204)
+        return
+    } else {
+        res.send(404)
+        return
+    }
 })
 
 //start app
