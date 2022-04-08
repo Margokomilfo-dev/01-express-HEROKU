@@ -30,7 +30,8 @@ export const postRepository ={
         }
         posts.push(newPost)
         if (postsLength < posts.length) {
-            return newPost
+            const blogger = bloggersRepository.findBloggerById(newPost.bloggerId)
+            return {...newPost, bloggerName: blogger?.name}
         } else return null
     },
     getPostById(id:number){
