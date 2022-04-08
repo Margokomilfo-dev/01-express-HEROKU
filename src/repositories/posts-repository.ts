@@ -13,7 +13,11 @@ let posts: Array<PostType> = [
 ]
 export const postRepository ={
     getPosts(){
-       return posts
+        const newPosts = posts.map(p => {
+           let bloggerName =  bloggersRepository.findBloggerById(p.bloggerId)?.name
+            return {...p, bloggerName}
+        })
+       return newPosts
     },
     createPost(title:string, descr: string, content: string, bloggerId: number){
         const postsLength = posts.length
