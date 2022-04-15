@@ -3,8 +3,7 @@ import {postRepository} from '../repositories/posts-repository'
 import {bloggersRepository} from '../repositories/bloggers-repository'
 import {
     bloggerIdValidation,
-    contentValidation,
-    inputValidationMiddleware,
+    contentValidation, inputValidationMiddleware,
     shortDescriptionValidation,
     titleValidation
 } from '../middlewares/input-validation-middleware'

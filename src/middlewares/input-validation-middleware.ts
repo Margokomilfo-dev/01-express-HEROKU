@@ -3,6 +3,7 @@ import {body, validationResult} from 'express-validator'
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction)=> {
     const errors = validationResult(req)
+    console.log(errors)
     if (!errors.isEmpty()) {
         res.status(400).json({
             data: {},
@@ -16,13 +17,13 @@ export const inputValidationMiddleware = (req: Request, res: Response, next: Nex
     }
 }
 
-const regexp =  new RegExp('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$')
+// const regexp =  new RegExp('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$')
 export const titleValidation = body('title').trim().isLength({min: 2, max: 33})
     .withMessage('title is required and its length should be 3-33 symbols')
-export const nameValidation = body('name').trim().isLength({min: 2, max: 33})
-    .withMessage('name is required and its length should be 3-33 symbols')
-export const youtubeUrlValidation = body('UrlValidation').trim().matches(regexp).not().isEmpty()
-    .withMessage('UrlValidation is not valid')
+// export const nameValidation = body('name').trim().isLength({min: 2, max: 33})
+//     .withMessage('name is required and its length should be 3-33 symbols')
+// export const youtubeUrlValidation = body('UrlValidation').matches(regexp).not().isEmpty()
+//     .withMessage('UrlValidation is not valid')
 export const shortDescriptionValidation = body('shortDescription').trim().isLength({min: 2, max: 33})
     .withMessage('shortDescription is required and its length should be 3-33 symbols')
 export const contentValidation = body('content').trim().isLength({min: 2, max: 33})
