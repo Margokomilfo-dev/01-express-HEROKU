@@ -6,8 +6,6 @@ import {inputValidationMiddleware, titleValidation} from '../middlewares/input-v
 
 export const videosRouter = Router({})
 
-
-
 videosRouter.get('/', (req: Request, res: Response) => {
     const videos = videosRepository.getVideos()
     res.send(videos)
