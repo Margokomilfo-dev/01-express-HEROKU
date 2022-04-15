@@ -29,7 +29,7 @@ postsRouter.post('/',
             res.status(400).send({
                 data: {},
                 resultCode: 1,
-                errorsMessages: [{message: 'no blogger with this id', field: '-'}]
+                errorsMessages: [{message: 'no blogger with this id', field: 'bloggerId'}]
             })
             return
         }
