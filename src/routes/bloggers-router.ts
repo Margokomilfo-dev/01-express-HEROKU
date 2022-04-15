@@ -9,9 +9,10 @@ bloggersRouter.get('/', (req: Request, res: Response) => {
     const bloggers = bloggersRepository.findBloggers(req.query.name?.toString())
     res.status(200).send(bloggers)
 })
+
 bloggersRouter.post('/', (req: Request, res: Response) => {
-    const name = req.body.name
-    const youtubeUrl = req.body.youtubeUrl
+    const name = req.body.name?.trim()
+    const youtubeUrl = req.body.youtubeUrl?.trim()
     const falseParams = checkNameAndUrl(name, youtubeUrl)
     if(falseParams){
         res.status(400).send(falseParams)
@@ -51,8 +52,8 @@ bloggersRouter.put('/:id', (req: Request, res: Response) => {
         res.send(400)
         return
     }
-    const name = req.body.name
-    const youtubeUrl = req.body.youtubeUrl
+    const name = req.body.name?.trim()
+    const youtubeUrl = req.body.youtubeUrl?.trim()
     const falseParams = checkNameAndUrl(name, youtubeUrl)
     if(falseParams){
         res.status(400).send(falseParams)

@@ -11,9 +11,9 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send(posts)
 })
 postsRouter.post('/', (req: Request, res: Response) => {
-    const title = req.body.title
-    const shortDescription = req.body.shortDescription
-    const content = req.body.content
+    const title = req.body.title.trim()
+    const shortDescription = req.body.shortDescription?.trim()
+    const content = req.body.content?.trim()
     const bloggerId = +req.body.bloggerId
 
     if (!title || !shortDescription || !content || !bloggerId) {
@@ -63,9 +63,9 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
         res.send(400)
         return
     }
-    const title = req.body.title
-    const shortDescription = req.body.shortDescription
-    const content = req.body.content
+    const title = req.body.title?.trim()
+    const shortDescription = req.body.shortDescription?.trim()
+    const content = req.body.content?.trim()
     const bloggerId = +req.body.bloggerId
 
     if (!title || !shortDescription || !content || !bloggerId) {

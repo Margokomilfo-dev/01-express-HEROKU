@@ -14,7 +14,7 @@ export const videosRepository={
             author: 'it-incubator.eu'
         }
         videos.push(newVideo)
-        if (videosLength > videos.length) {
+        if (videosLength < videos.length) {
            return newVideo
         } else {
             return null
