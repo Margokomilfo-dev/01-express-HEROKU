@@ -1,7 +1,6 @@
 import {Request, Response, Router} from 'express'
 import {isNumeric} from '../index'
 import {videosRepository} from '../repositories/videos-repository'
-import {postRepository} from '../repositories/posts-repository'
 import {body, validationResult} from 'express-validator'
 import {inputValidationMiddleware} from '../middlewares/input-validation-middleware'
 
@@ -29,11 +28,12 @@ videosRouter.get('/:id', (req: Request, res: Response) => {
 })
 videosRouter.delete('/:id', (req: Request, res: Response) => {
     const id = +req.params.id
+    console.log(id)
     if (!id || !isNumeric(id)) {
         res.send(404)
         return
     }
-    const isDeleted = postRepository.deletePost(id)
+    const isDeleted = videosRepository.deleteVideo(id)
     if (isDeleted) {
         res.send(204)
     } else {
