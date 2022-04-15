@@ -1,7 +1,13 @@
 import {Request, Response, Router} from 'express'
-import {isNumeric} from '../index'
 import {postRepository} from '../repositories/posts-repository'
 import {bloggersRepository} from '../repositories/bloggers-repository'
+import {
+    bloggerIdValidation,
+    contentValidation,
+    inputValidationMiddleware,
+    shortDescriptionValidation,
+    titleValidation
+} from '../middlewares/input-validation-middleware'
 
 export const postsRouter = Router({})
 
@@ -10,20 +16,11 @@ postsRouter.get('/', (req: Request, res: Response) => {
     const posts = postRepository.getPosts()
     res.status(200).send(posts)
 })
-postsRouter.post('/', (req: Request, res: Response) => {
-    const title = req.body.title.trim()
-    const shortDescription = req.body.shortDescription?.trim()
-    const content = req.body.content?.trim()
-    const bloggerId = +req.body.bloggerId
-
-    if (!title || !shortDescription || !content || !bloggerId) {
-        res.status(400).send({
-            data: {},
-            resultCode: 1,
-            errorsMessages: [{message: 'no res.body', field: 'title or shortDescription or content or bloggerId'}]
-        })
-        return
-    }
+postsRouter.post('/', titleValidation, shortDescriptionValidation, contentValidation, bloggerIdValidation,  inputValidationMiddleware,(req: Request, res: Response) => {
+    const title = req.body.title
+    const shortDescription = req.body.shortDescription
+    const content = req.body.content
+    const bloggerId = req.body.bloggerId
     const blogger = bloggersRepository.findBloggerById(bloggerId)
     if (!blogger) {
         res.status(400).send({
@@ -45,8 +42,8 @@ postsRouter.post('/', (req: Request, res: Response) => {
     }
 })
 postsRouter.get('/:id', (req: Request, res: Response) => {
-    const id = +req.params.id
-    if (!id || !isNumeric(id)) {
+    const id = parseInt(req.params.id)
+    if (!id) {
         res.send(400)
         return
     }
@@ -57,25 +54,17 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
         res.send(404)
     }
 })
-postsRouter.put('/:id', (req: Request, res: Response) => {
-    const id = +req.params.id
-    if (!id || !isNumeric(id)) {
+postsRouter.put('/:id', titleValidation, shortDescriptionValidation, contentValidation, bloggerIdValidation, inputValidationMiddleware,(req: Request, res: Response) => {
+    const id = parseInt(req.params.id)
+    if (!id ) {
         res.send(400)
         return
     }
-    const title = req.body.title?.trim()
-    const shortDescription = req.body.shortDescription?.trim()
-    const content = req.body.content?.trim()
-    const bloggerId = +req.body.bloggerId
+    const title = req.body.title
+    const shortDescription = req.body.shortDescription
+    const content = req.body.content
+    const bloggerId = req.body.bloggerId
 
-    if (!title || !shortDescription || !content || !bloggerId) {
-        res.status(400).send({
-            data: {},
-            resultCode: 1,
-            errorsMessages: [{message: 'no res.body', field: 'title or shortDescription or content or bloggerId'}]
-        })
-        return
-    }
     const blogger = bloggersRepository.findBloggerById(bloggerId)
     if(!blogger){
         res.sendStatus(400)
@@ -87,8 +76,8 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
     } else res.send(404)
 })
 postsRouter.delete('/:id', (req: Request, res: Response) => {
-    const id = +req.params.id
-    if (!id || !isNumeric(id)) {
+    const id = parseInt(req.params.id)
+    if (!id) {
         res.send(400)
         return
     }

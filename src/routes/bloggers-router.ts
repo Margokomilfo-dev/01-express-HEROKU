@@ -1,6 +1,10 @@
 import {Request, Response, Router} from 'express'
-import {isNumeric} from '../index'
 import {bloggersRepository} from '../repositories/bloggers-repository'
+import {
+    inputValidationMiddleware,
+    nameValidation,
+    youtubeUrlValidation
+} from '../middlewares/input-validation-middleware'
 
 export const bloggersRouter = Router({})
 
@@ -10,12 +14,11 @@ bloggersRouter.get('/', (req: Request, res: Response) => {
     res.status(200).send(bloggers)
 })
 
-bloggersRouter.post('/', (req: Request, res: Response) => {
-    const name = req.body.name?.trim()
-    const youtubeUrl = req.body.youtubeUrl?.trim()
-    const falseParams = checkNameAndUrl(name, youtubeUrl)
-    if(falseParams){
-        res.status(400).send(falseParams)
+bloggersRouter.post('/', nameValidation, youtubeUrlValidation, inputValidationMiddleware,(req: Request, res: Response) => {
+    const name = req.body.name
+    const youtubeUrl = req.body.youtubeUrl
+    if (!name || !youtubeUrl) {
+        res.send(400)
         return
     }
     const blogger = bloggersRepository.createBlogger(name, youtubeUrl)
@@ -31,9 +34,8 @@ bloggersRouter.post('/', (req: Request, res: Response) => {
     }
 })
 bloggersRouter.get('/:id', (req: Request, res: Response) => {
-    const id = +req.params.id
-    const trulyId = checkNumId(id)
-    if (!trulyId) {
+    const id = parseInt(req.params.id)
+    if (!id) {
         res.send(400)
         return
     }
@@ -45,29 +47,23 @@ bloggersRouter.get('/:id', (req: Request, res: Response) => {
     }
 
 })
-bloggersRouter.put('/:id', (req: Request, res: Response) => {
-    const id = +req.params.id
-   const trulyId = checkNumId(id)
+bloggersRouter.put('/:id', nameValidation, youtubeUrlValidation, inputValidationMiddleware,(req: Request, res: Response) => {
+    const trulyId = parseInt(req.params.id)
     if (!trulyId) {
         res.send(400)
         return
     }
-    const name = req.body.name?.trim()
-    const youtubeUrl = req.body.youtubeUrl?.trim()
-    const falseParams = checkNameAndUrl(name, youtubeUrl)
-    if(falseParams){
-        res.status(400).send(falseParams)
-        return
-    }
-    const isUpdated = bloggersRepository.updateBlogger(id, name, youtubeUrl)
+    const name = req.body.name
+    const youtubeUrl = req.body.youtubeUrl
+
+    const isUpdated = bloggersRepository.updateBlogger(trulyId, name, youtubeUrl)
     if (isUpdated) {
         res.sendStatus(204)
     } else res.send(404)
 })
 bloggersRouter.delete('/:id', (req: Request, res: Response) => {
-    const id = +req.params.id
-    const trulyId = checkNumId(id)
-    if (!trulyId) {
+    const id = parseInt(req.params.id)
+    if (!id) {
         res.send(400)
         return
     }
@@ -76,33 +72,3 @@ bloggersRouter.delete('/:id', (req: Request, res: Response) => {
         res.send(204)
     } else res.send(404)
 })
-
-const checkNumId = (id: any) => {
-    return !(!id || !isNumeric(id));
-}
-const checkNameAndUrl = (name: string, url: string) => {
-    if (!name || !url) {
-      return{
-            data: {},
-            resultCode: 1,
-            errorsMessages: [{message: 'no res.body', field: 'name or youtubeUrl'}]
-        }
-    }
-    if (url) {
-        const regex = new RegExp('^https://([a-zA-Z0-9_-]+\\.)+[a-zA-Z0-9_-]+(\\/[a-zA-Z0-9_-]+)*\\/?$')
-        const result = regex.test(url)
-        if (!result) {
-            return {
-                data: {},
-                resultCode: 1,
-                errorsMessages: [
-                    {
-                        message: 'The field YoutubeUrl must match the regular expression \'^https://([a-zA-Z0-9_-]+\\\\.)+[a-zA-Z0-9_-]+(\\\\/[a-zA-Z0-9_-]+)*\\\\/?$\'.',
-                        field: 'youtubeUrl'
-                    }
-                ]
-            }
-        }
-    }
-    else return false
-}

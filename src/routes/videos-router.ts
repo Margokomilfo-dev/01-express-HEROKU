@@ -1,13 +1,10 @@
 import {Request, Response, Router} from 'express'
 import {isNumeric} from '../index'
 import {videosRepository} from '../repositories/videos-repository'
-import {body, validationResult} from 'express-validator'
-import {inputValidationMiddleware} from '../middlewares/input-validation-middleware'
+import {validationResult} from 'express-validator'
+import {inputValidationMiddleware, titleValidation} from '../middlewares/input-validation-middleware'
 
 export const videosRouter = Router({})
-
-const titleValidation = body('title').trim().isLength({min: 2, max: 33})
-    .withMessage('title is required and its length should be 3-33 symbols')
 
 videosRouter.get('/', (req: Request, res: Response) => {
     const videos = videosRepository.getVideos()
