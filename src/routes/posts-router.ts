@@ -76,6 +76,11 @@ postsRouter.put('/:id', (req: Request, res: Response) => {
         })
         return
     }
+    const blogger = bloggersRepository.findBloggerById(bloggerId)
+    if(!blogger){
+        res.sendStatus(400)
+        return
+    }
     const isUpdated=postRepository.updatePost(id, title, shortDescription, content, bloggerId)
     if (isUpdated) {
         res.sendStatus(204)

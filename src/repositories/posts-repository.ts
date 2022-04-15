@@ -44,9 +44,8 @@ export const postRepository ={
         } else return null
     },
     updatePost(id:number,title:string, descr: string, content: string, bloggerId: number){
-        const blogger = bloggersRepository.findBloggerById(bloggerId)
         const post = posts.find(p => p.id === id)
-        if (blogger && post) {
+        if (post) {
             posts = posts.map(p => {
                 if (p.id === id) {
                     return {...p, title, bloggerId, content, shortDescription:descr}
