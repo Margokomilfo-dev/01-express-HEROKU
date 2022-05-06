@@ -3,7 +3,7 @@ import {bloggersRepository} from '../repositories/bloggers-repository'
 import {
     inputValidationMiddleware,
     nameValueValidation,
-    youtubeUrlValidation
+    youtubeUrlValidation1, youtubeUrlValidation2
 } from '../middlewares/input-validation-middleware'
 
 export const bloggersRouter = Router({})
@@ -15,7 +15,8 @@ bloggersRouter.get('/', (req: Request, res: Response) => {
 
 bloggersRouter.post('/',
     nameValueValidation,
-    youtubeUrlValidation,
+    youtubeUrlValidation1,
+    youtubeUrlValidation2,
     inputValidationMiddleware, (req: Request, res: Response) => {
         const name = req.body.name
         const youtubeUrl = req.body.youtubeUrl
@@ -47,7 +48,8 @@ bloggersRouter.get('/:id', (req: Request, res: Response) => {
 })
 bloggersRouter.put('/:id',
     nameValueValidation,
-    youtubeUrlValidation,
+    youtubeUrlValidation1,
+    youtubeUrlValidation2,
     inputValidationMiddleware, (req: Request, res: Response) => {
         const id = parseInt(req.params.id)
         if (!id) {
